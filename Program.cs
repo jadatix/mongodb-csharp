@@ -10,8 +10,8 @@ namespace MyNamespace
             var dbClient = new MongoClient("mongodb://127.0.0.1:27017");
 
             IMongoDatabase db = dbClient.GetDatabase("grocery");
-            InsertSells(db);
-            ShowCollection("sells", db);
+            InsertSupplier(db);
+            ShowCollection("supplier", db);
 
         }
 
@@ -59,7 +59,8 @@ namespace MyNamespace
             var doc = new BsonDocument { { "goods", id }, { "date", DateTime.UtcNow }, { "price_per_good", Int64.Parse(ppg) } };
             InsertToCollection("receipt_goods", db, doc);
         }
-        static void InsertSells(IMongoDatabase db){
+        static void InsertSells(IMongoDatabase db)
+        {
             var goods_col = db.GetCollection<BsonDocument>("goods");
             var all_docs = goods_col.Find(new BsonDocument()).ToList();
             ShowCollection("goods", db);
@@ -86,17 +87,28 @@ namespace MyNamespace
             var all = _col.Find(new BsonDocument()).ToList();
             all.ForEach(doc =>
             {
-                if(doc.GetValue("goods")==id)
+                if (doc.GetValue("goods") == id)
                     price_per_good = doc.GetValue("price_per_good").ToInt64();
             });
             Console.WriteLine("Введіть кількісь поданих товарів");
             string? sold = Console.ReadLine();
-            var doc = new BsonDocument { { "goods", id }, { "month", DateTime.UtcNow.Month }, 
+            var doc = new BsonDocument { { "goods", id }, { "month", DateTime.UtcNow.Month },
                                         {"sold",Int64.Parse(sold) },
                                         {"earned_money",Int64.Parse(sold)*price_per_good} };
             InsertToCollection("sells", db, doc);
         }
-        
+
+        static void InsertSupplier(IMongoDatabase db)
+        {
+            Console.WriteLine("Введіть ім'я постачальника ");
+            string? name = Console.ReadLine();
+            Console.WriteLine("Введіть адресу постачальника ");
+            string? address = Console.ReadLine();
+            Console.WriteLine("Введіть Телефон постачальника ");
+            string? tel = Console.ReadLine();
+            var doc = new BsonDocument { { "name", name }, { "address", address }, { "telephoe", tel } };
+            InsertToCollection("supplier", db, doc);
+        }
 
         static void InsertToCollection(string col_name, IMongoDatabase db, BsonDocument doc)
         {

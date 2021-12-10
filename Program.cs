@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Bson;
 
-namespace SimpleEx
+namespace MyNamespace
 {
     class Program
     {
